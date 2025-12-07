@@ -1,0 +1,10 @@
+[package]
+name = "hypercore-memory-sqlite"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+hypercore = { path = "../hypercore" }
+async-trait = "0.1"
+rusqlite = { version = "0.28", features = ["bundled"] }
+tokio = { version = "1", features = ["rt-multi-thread", "macros"] }

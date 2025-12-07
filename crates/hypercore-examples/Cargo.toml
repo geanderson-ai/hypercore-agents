@@ -1,0 +1,11 @@
+[package]
+name = "hypercore-examples"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+hypercore = { path = "../hypercore" }
+hypercore-openai = { path = "../hypercore-openai" }
+hypercore-tools = { path = "../hypercore-tools" }
+hypercore-memory-sqlite = { path = "../hypercore-memory-sqlite" }
+tokio = { version = "1", features = ["rt-multi-thread", "macros"] }

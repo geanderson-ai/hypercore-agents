@@ -1,0 +1,8 @@
+[workspace]
+members = [
+  "crates/hypercore",
+  "crates/hypercore-openai",
+  "crates/hypercore-tools",
+  "crates/hypercore-memory-sqlite",
+  "crates/hypercore-examples",
+]
