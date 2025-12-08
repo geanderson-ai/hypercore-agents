@@ -1,6 +1,11 @@
 # HYPERCORE  
 ### Runtime de Agentes de IA em Rust – Seguro, Rápido e Pronto para Produção
 
+## Updated Overview
+
+This project now includes a native Rust extension, a runner binary, and a Python shim for easy integration. The workspace is organized into multiple crates: `hypercore-native`, `hypercore-runner`, `hypercore-python-shim`, and example scripts.
+
+
 ```
  _   _                       _____                
 | | | |                     /  __ \               
