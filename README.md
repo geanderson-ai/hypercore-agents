@@ -3,7 +3,7 @@
 
 ## Updated Overview
 
-This project now includes a native Rust extension, a runner binary, and a Python shim for easy integration. The workspace is organized into multiple crates: `hypercore-native`, `hypercore-runner`, `hypercore-python-shim`, and example scripts.
+This project now includes a native Rust extension, a runner binary, a Python shim for easy integration, and new crates `hypercore-symbolic` and `hypercore-hybrid` for neuro‑symbolic reasoning. The workspace is organized into multiple crates: `hypercore-native`, `hypercore-runner`, `hypercore-python-shim`, and example scripts.
 
 
 ```
