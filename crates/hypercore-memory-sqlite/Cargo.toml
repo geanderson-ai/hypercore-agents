@@ -5,6 +5,9 @@ edition = "2024"
 
 [dependencies]
 hypercore = { path = "../hypercore" }
+hypercore-symbolic = { path = "../hypercore-symbolic" }
 async-trait = "0.1"
-rusqlite = { version = "0.28", features = ["bundled"] }
+rusqlite = { version = "0.29", features = ["bundled"] }
 tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"

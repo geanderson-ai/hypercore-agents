@@ -5,4 +5,8 @@ members = [
   "crates/hypercore-tools",
   "crates/hypercore-memory-sqlite",
   "crates/hypercore-examples",
+  "crates/hypercore-symbolic",
+  "crates/hypercore-hybrid",
+  "crates/hypercore/runner",
 ]
+resolver = "3"
