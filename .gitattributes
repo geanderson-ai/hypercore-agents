@@ -1,0 +1,3 @@
+# Enforce LF line endings for text files
+* text eol=lf
+Cargo.toml text eol=lf
