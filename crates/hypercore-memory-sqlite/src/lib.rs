@@ -28,6 +28,26 @@ impl SqliteMemory {
             [],
         ).unwrap();
 
+        conn.execute(
+            "CREATE TABLE IF NOT EXISTS rules (
+                name TEXT PRIMARY KEY,
+                condition_json TEXT NOT NULL,
+                head_json TEXT NOT NULL
+            )",
+            [],
+        ).unwrap();
+
+        conn.execute(
+            "CREATE TABLE IF NOT EXISTS reasoning_trace (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                session_id TEXT NOT NULL,
+                step_number INTEGER NOT NULL,
+                description_json TEXT NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )",
+            [],
+        ).unwrap();
+
         Self { db_path: p }
     }
 
@@ -59,6 +79,24 @@ impl SqliteMemory {
              facts.push(fact.map_err(to_err)?);
          }
          Ok(facts)
+    }
+
+    pub async fn add_rule(&self, name: &str, condition_json: &str, head_json: &str) -> HyperResult<()> {
+        let conn = Connection::open(&self.db_path).map_err(to_err)?;
+        conn.execute(
+            "INSERT OR REPLACE INTO rules (name, condition_json, head_json) VALUES (?1, ?2, ?3)",
+            params![name, condition_json, head_json],
+        ).map_err(to_err)?;
+        Ok(())
+    }
+
+    pub async fn log_trace(&self, session_id: &str, step: i32, description: &str) -> HyperResult<()> {
+        let conn = Connection::open(&self.db_path).map_err(to_err)?;
+        conn.execute(
+            "INSERT INTO reasoning_trace (session_id, step_number, description_json) VALUES (?1, ?2, ?3)",
+            params![session_id, step, description],
+        ).map_err(to_err)?;
+        Ok(())
     }
 }
 

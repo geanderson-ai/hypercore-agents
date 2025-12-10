@@ -20,27 +20,38 @@ impl OpenAIPolicy {
 #[async_trait]
 impl Policy for OpenAIPolicy {
     async fn decide(&self, input: &str, _memory: &dyn Memory) -> HyperResult<String> {
-        let _body = json!({
-            "model": "gpt-4-turbo",
-            "messages": [
-                {"role": "system", "content": "You are a neuro-symbolic reasoning agent."},
-                {"role": "user", "content": input}
-            ]
-        });
-
-        // Placeholder for actual API call
-        // In a real scenario, we would use self.client.post(...)
+        // In a real implementation, this would call the OpenAI API.
+        // For now, we simulate a response that might contain facts.
         
-        // Simulating a structured response if input asks for it
-        if input.starts_with("FACT:") {
-             Ok(json!({
-                 "entity": "simulation",
-                 "attribute": "status",
-                 "value": "active",
-                 "confidence": 95
-             }).to_string())
+        let response_text = if input.contains("Validar contrato") {
+            json!([
+                { "entity": "contract_123", "attribute": "status", "value": "active", "confidence": 99 },
+                { "entity": "contract_123", "attribute": "amount", "value": "50000", "confidence": 95 }
+            ]).to_string()
         } else {
-             Ok(format!("(Simulated OpenAI Response for: {})", input))
+             format!("(Simulated OpenAI Response for: {})", input)
+        };
+
+        Ok(response_text)
+    }
+
+}
+
+impl OpenAIPolicy {
+    pub fn interpret_as_facts(&self, text: &str) -> Vec<hypercore_symbolic::Fact> {
+        let parsed: Result<Vec<serde_json::Value>, _> = serde_json::from_str(text);
+        
+        if let Ok(json_facts) = parsed {
+            json_facts.into_iter().filter_map(|j| {
+                Some(hypercore_symbolic::Fact {
+                    entity: j["entity"].as_str()?.to_string(),
+                    attribute: j["attribute"].as_str()?.to_string(),
+                    value: j["value"].as_str()?.to_string(),
+                    confidence: j["confidence"].as_u64()? as u8,
+                })
+            }).collect()
+        } else {
+            vec![]
         }
     }
 }

@@ -10,3 +10,4 @@ reqwest = { version = "0.11", features = ["json", "rustls-tls"] }
 tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
+hypercore-symbolic = { path = "../hypercore-symbolic" }
