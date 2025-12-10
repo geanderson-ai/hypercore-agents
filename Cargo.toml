@@ -4,9 +4,9 @@ members = [
   "crates/hypercore-openai",
   "crates/hypercore-tools",
   "crates/hypercore-memory-sqlite",
-  "crates/hypercore-examples",
   "crates/hypercore-symbolic",
   "crates/hypercore-hybrid",
   "crates/hypercore/runner",
+  "crates/hypercore-examples-groq",
 ]
 resolver = "3"

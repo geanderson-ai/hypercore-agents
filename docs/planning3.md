@@ -47,7 +47,7 @@ Passa a ser o **núcleo operacional** do framework.
 Novas responsabilidades:
 
 * Orquestrar passos de raciocínio (jobs)
-* Coordenar agentes neurais e simbólicos
+* Coordenar unidades neurais e simbólicas
 * Gerenciar sessões de raciocínio
 * Registrar explicações e traces
 * Controlar paralelismo de deduções
