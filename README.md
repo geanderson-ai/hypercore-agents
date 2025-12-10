@@ -1,10 +1,5 @@
-# HYPERCORE  
-### Runtime de Agentes de IA em Rust – Seguro, Rápido e Pronto para Produção
-
-## Updated Overview
-
-This project now includes a native Rust extension, a runner binary, a Python shim for easy integration, and new crates `hypercore-symbolic` and `hypercore-hybrid` for neuro‑symbolic reasoning. The workspace is organized into multiple crates: `hypercore-native`, `hypercore-runner`, `hypercore-python-shim`, and example scripts.
-
+# HYPERCORE: Framework Neuro-Simbólico
+### Motor de Raciocínio Híbrido em Rust – Seguro, Rápido e Determinístico
 
 ```
  _   _                       _____                
@@ -19,231 +14,97 @@ This project now includes a native Rust extension, a runner binary, a Python shi
 
 ---
 
-## **O que é o Hypercore?**
+## **O que é o HyperCore?**
 
-O **Hypercore** é um *runtime de agentes de IA em Rust*, projetado para desenvolvedores que precisam de:
+O **HyperCore** é um *framework de raciocínio híbrido* (Neuro-Symbolic), projetado para sistemas que precisam de:
 
-- Baixa latência real  
-- Concorrência massiva  
-- Segurança de memória  
-- Confiabilidade em produção  
-- Integração com LLMs modernas  
-- Estrutura modular e extensível  
+- **Flexibilidade Neural**: Interpretação de linguagem e contexto via LLMs.
+- **Precisão Simbólica**: Regras lógicas, fatos estruturados e dedução determinística.
+- **Confiabilidade**: Traceabilidade completa das decisões e estado.
+- **Performance**: Execução concorrente e segura em Rust.
 
-Ele oferece uma base sólida para construir agentes autônomos, copilotos, pipelines inteligentes e automações robustas — tudo com a previsibilidade e performance do Rust.
-
-**Você escreve o agente.  
-O Hypercore garante que ele rode rápido, seguro e sem surpresas.**
+Ao contrário de runtimes de "agentes" tradicionais que dependem exclusivamente de prompts, o HyperCore fundamenta o raciocínio em uma **memória estruturada de fatos e regras**, utilizando LLMs como *motores de percepção* e algoritmos simbólicos como *motores de dedução*.
 
 ---
 
-## **Por que o Hypercore existe?**
+## **Arquitetura**
 
-Porque frameworks de agentes em Python são ótimos para prototipar, mas péssimos para:
+O workspace é composto por crates modularizados:
 
-- Escalar  
-- Rodar concorrência real  
-- Garantir segurança  
-- Operar em edge  
-- Rodar milhares de agentes simultaneamente  
+### 1. **`hypercore`** (Core)
+O orquestrador central. Gerencia sessões, coordena os motores de raciocínio e mantém o ciclo de vida da execução.
 
-Rust resolve essas dores, mas faltava um runtime idiomático, conciso, pragmático e modular.  
-**O Hypercore nasce para preencher essa lacuna.**
+### 2. **`hypercore-symbolic`** (Symbolic Engine)
+Motor de dedução lógica. Gerencia fatos (Entities-Attributes-Values), regras e inferência (forward-chaining). Garante consistência lógica.
 
----
+### 3. **`hypercore-hybrid`** (Planner)
+O "cérebro" do sistema. Planeja passos de raciocínio, decidindo quando consultar o modelo neural e quando aplicar deduções lógicas.
 
-## **Filosofia do Projeto**
+### 4. **`hypercore-openai`** (Neural Layer)
+Interface neural. Transforma texto não estruturado em fatos estruturados (JSON) e propostas de raciocínio.
 
-- **Minimalismo funcional**: apenas o essencial para construir agentes úteis.  
-- **Modularidade extrema**: cada parte é um crate separado.  
-- **Zero mágica**: sem comportamento implícito. Tudo é explícito.  
-- **DX primeiro**: experiência do desenvolvedor importa — exemplos, ergonomia e clareza.  
-- **Prod-ready desde o início**: testes, tipagem forte, concorrência segura.  
-- **Comunidade acima de tudo**: documentado, simples, extensível.  
+### 5. **`hypercore-memory-sqlite`** (Persistent Memory)
+Persistência transacional de fatos, regras e traces de raciocínio.
+
+### 6. **`hypercore-tools`** (Utilities)
+Ferramentas de suporte e conexões externas.
 
 ---
 
-# **Instalação**
-
-### Via Cargo (em breve no crates.io):
+## **Instalação**
 
 ```toml
 [dependencies]
-hypercore = "0.1"
-hypercore-openai = "0.1"
-hypercore-tools = "0.1"
-hypercore-memory-sqlite = "0.1"
+hypercore = { path = "crates/hypercore" }
+hypercore-symbolic = { path = "crates/hypercore-symbolic" }
+hypercore-hybrid = { path = "crates/hypercore-hybrid" }
 ```
 
 ---
 
-# **Exemplo mínimo**
+## **Conceito de Uso**
 
 ```rust
-use hypercore::Agent;
-use std::sync::Arc;
+use hypercore::Orchestrator;
+use hypercore_hybrid::HybridPlanner;
 
 #[tokio::main]
 async fn main() {
-    let policy = hypercore_openai::boxed_openai("API_KEY");
-    let tool = Arc::new(hypercore_tools::HttpTool::new());
-    let memory = Arc::new(hypercore_memory_sqlite::SqliteMemory::new("memory.db"));
+    // 1. Inicializa o Orquestrador
+    let mut orchestrator = Orchestrator::new();
 
-    let agent = Agent::builder("demo")
-        .with_policy(policy)
-        .with_tool(tool)
-        .with_memory(memory)
-        .build()
-        .unwrap();
+    // 2. Define um objetivo
+    let goal = "Validar contrato bancário sob regras de 2024";
 
-    let out = agent.run("Busque informações sobre IA").await.unwrap();
-    println!("{}", out);
+    // 3. Executa o ciclo híbrido
+    let result = orchestrator.reason(goal).await.unwrap();
+
+    println!("Resultado: {}", result.conclusion);
+    println!("Trace: {:?}", result.trace);
 }
 ```
 
 ---
 
-# **Arquitetura (MVP)**
+## **Roadmap (Transição)**
 
-### 1. **hypercore**  
-Runtime, traits, executor, ciclo do agente.
+### **v0.1 – Fundação (Atual)**
+- [x] Estrutura de crates definida.
+- [x] Motor Simbólico básico (Fatos e Regras).
+- [x] Persistência SQLite inicial.
+- [x] Remoção de abstrações legadas de "Agentes".
 
-### 2. **hypercore-openai**  
-Adapter simples para políticas baseadas em OpenAI.
+### **v0.2 – Ciclo Híbrido**
+- [ ] Integração completa Neural -> Simbólica.
+- [ ] Parser robusto de JSON para Fatos.
+- [ ] Planner capaz de loops de refinação.
 
-### 3. **hypercore-tools**  
-Ferramentas internas — HTTP, shell, file operations.
-
-### 4. **hypercore-memory-sqlite**  
-Memória básica persistente.
-
-### 5. **hypercore-examples**  
-Exemplos end-to-end.
-
----
-
-# **Manifesto Oficial do Hypercore**
-
-> Construímos agentes de IA que não travam, não vazam memória e não colapsam sob carga.  
->  
-> Construímos para quem precisa operar no mundo real — onde latência importa, dados importam e segurança importa.  
->  
-> Não queremos ser “mais um framework de agentes”.  
-> Queremos ser a camada fundamental onde agentes confiáveis existem.  
->  
-> Somos minimalistas, pragmáticos e diretos.  
-> Sem mágica. Sem açúcar demais.  
-> Apenas um runtime sólido, rápido e previsível.  
->  
-> O Hypercore existe para permitir que você construa sistemas inteligentes que **duram**,  
-> **escala**,  
-> e **funcionam** sob qualquer carga.  
->  
-> Rust oferece as fundações.  
-> O Hypercore transforma isso em um ecossistema produtivo.  
->  
-> Nosso compromisso:  
-> **clareza, simplicidade, performance e comunidade.**
+### **v0.3 – Observabilidade e Tools**
+- [ ] Tracing completo de cada passo de dedução.
+- [ ] Ferramentas de inspeção de estado.
 
 ---
 
-# **Pitch para o crates.io**
+## **Licença**
 
-> **Hypercore** — Runtime de agentes de IA em Rust.  
->  
-> Seguro, rápido, modular.  
->  
-> Construa agentes que realmente executam tarefas, com:  
-> - Concorrência massiva  
-> - Baixa latência  
-> - Políticas baseadas em LLMs  
-> - Tool calling  
-> - Memória persistente  
->  
-> O Hypercore é minimalista, direto e feito para produção.  
-> Instale, implemente um `Agent`, adicione uma `Policy`, `Tools` e `Memory`.  
-> Pronto: você tem um agente autônomo confiável.
-
----
-
-# **Roadmap 0.1 → 1.0**
-
-### **v0.1 — MVP Funcional (agora)**
-- Runtime mínimo  
-- Traits: Agent, Policy, Tool, Memory  
-- Executor básico  
-- Adapter OpenAI (mock)  
-- Tool HTTP simples  
-- SQLite memory store  
-- Exemplo end-to-end  
-- mdBook + CI  
-
-### **v0.2 — Primeiro Release Público**
-- Policy OpenAI real  
-- Tool HTTP completa  
-- Melhorias no ciclo de decisão  
-- Logging estruturado  
-- Benchmarks oficiais  
-- Documentação de API  
-
-### **v0.3 — Ergonomia e Extensibilidade**
-- Macro helpers para criar tools  
-- Config system  
-- Política REACT minimal  
-- Suporte a ferramentas encadeadas  
-- Melhor tratamento de erros  
-
-### **v0.4 — Performance & Observabilidade**
-- Tracing nativo (OpenTelemetry)  
-- Mais benchmarks  
-- Perfil de memória  
-- Loop otimizado  
-
-### **v0.5 — Ecossistema Expande**
-- Adapter Llama.cpp / Candle  
-- Memory vector store (ANN local)  
-- Tool: browser / scraper  
-- Tool: file I/O avançado  
-- CLI do Hypercore (hyperctl) preview  
-
-### **v0.6 — Segurança e Estabilidade**
-- Isolamento de tools  
-- Sandboxing leve  
-- Configuração de limites (timeouts, quotas)  
-
-### **v0.7 — Multimodal**
-- Suporte imagens  
-- Suporte áudio  
-- Tools multimodais  
-
-### **v0.8 — Workflows**
-- Mini orquestrador interno  
-- Steps declarativos  
-- Retentativas e compensações  
-
-### **v0.9 — Prod Ready**
-- Test suite completo  
-- Documentação corporativa  
-- Integração com containers leves  
-
-### **v1.0 — Lançamento Oficial**
-- API estável  
-- Conjunto robusto de adapters  
-- Observabilidade integrada  
-- Ferramentas avançadas  
-- Comunidade consolidada  
-
----
-
-# **Contribuindo**
-
-Pull Requests e discussões são bem-vindas.  
-Quanto mais simples e direta a contribuição, melhor.  
-O Hypercore é construído de forma comunitária, transparente e pragmática.
-
----
-
-# **Licença**
 MIT.
-
----
